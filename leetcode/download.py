@@ -8,77 +8,32 @@ HEADERS = {
     'Accept': '*/*',
     'Accept-Language': 'en-US,en;q=0.5',
     'Referer': 'https://leetcode.com/submissions/',
-    'Cookie': '__cfduid=d81d0a3a5e1642c7f7c6ca5af899f477e1575542088; csrftoken=qgHRGwqQvxSDeXAYSqex4tLXPmTAaI035Bg8GaE47H3XTSSDEZziCTkWQP5u1whZ; _ga=GA1.2.881666009.1575542090; _gid=GA1.2.822719810.1575542090; __atuvc=6%7C49%2C58%7C50%2C33%7C51%2C6%7C52; c_a_u="TC14bQ==:1ijlRW:fnmXegBeRtPDm1CgRrQAcoQhwmU"; __stripe_mid=ee5a4da2-f83b-4bae-ad7f-de8e15100b0d; LEETCODE_SESSION=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfYXV0aF91c2VyX2lkIjoiMjMxMDU0IiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiYWxsYXV0aC5hY2NvdW50LmF1dGhfYmFja2VuZHMuQXV0aGVudGljYXRpb25CYWNrZW5kIiwiX2F1dGhfdXNlcl9oYXNoIjoiNzcxOTEzZjk2ZTFkNGI4ZTAwNjE5YTcyOWY0MjIyM2ZkYjQ4ZTlmNiIsImlkIjoyMzEwNTQsImVtYWlsIjoibHhtNDJAZm94bWFpbC5jb20iLCJ1c2VybmFtZSI6IkwteG0iLCJ1c2VyX3NsdWciOiJsLXhtIiwiYXZhdGFyIjoiaHR0cHM6Ly9hc3NldHMubGVldGNvZGUuY29tL3VzZXJzL2wteG0vYXZhdGFyXzE1MjI0MDQ2NzgucG5nIiwidGltZXN0YW1wIjoiMjAxOS0xMi0xOSAxMzo1MzowOC45MDk3NzMrMDA6MDAiLCJJUCI6IjQ3LjUyLjY0LjUxIiwiSURFTlRJVFkiOiJiNTJlZGU2MjJhZGY1ZWYxMzFkNjZmOTY3NDFhOThhNiIsIl9zZXNzaW9uX2V4cGlyeSI6MTIwOTYwMH0.GtDeol71XD-1PZg7PQUOkS6VRpgcUBMtxxlDF3y1M4M'
+    'Cookie': ''
 }
 EXTENSIONS_MAP = {
-    'python3': {
-        'ext': 'py',
-        'comment': '#'
-    },
-    'python2': {
-        'ext': 'py',
-        'comment': '#'
-    },
-    'python': {
-        'ext': 'py',
-        'comment': '#'
-    },
-    'c': {
-        'ext': 'c',
-        'comment': '//'
-    },
-    'c++': {
-        'ext': 'cpp',
-        'comment': '//'
-    },
-    'java': {
-        'ext': 'java',
-        'comment': '//'
-    },
-    'C#': {
-        'ext': 'cs',
-        'comment': '//'
-    },
-    'javascript': {
-        'ext': 'js',
-        'comment': '//'
-    },
-    'ruby': {
-        'ext': 'rb',
-        'comment': '#'
-    },
-    'swift': {
-        'ext': 'switch',
-        'comment': '//'
-    },
-    'go': {
-        'ext': 'go',
-        'comment': '//'
-    },
-    'scala': {
-        'ext': 'scala',
-        'comment': '//'
-    },
-    'kotlin': {
-        'ext': 'kt',
-        'comment': '//'
-    },
-    'rust': {
-        'ext': 'rs',
-        'comment': '//'
-    },
-    'php': {
-        'ext': 'php',
-        'comment': '//'
-    },
-    'mysql': {
-        'ext': 'sql',
-        'comment': '#'
-    },
+    'python3': { 'ext': 'py', 'comment': '#' }, 
+    'python2': { 'ext': 'py', 'comment': '#' }, 
+    'python': { 'ext': 'py', 'comment': '#' }, 
+    'c': { 'ext': 'c', 'comment': '//' }, 
+    'c++': { 'ext': 'cpp', 'comment': '//' }, 
+    'java': { 'ext': 'java', 'comment': '//' }, 
+    'C#': { 'ext': 'cs', 'comment': '//' }, 
+    'javascript': { 'ext': 'js', 'comment': '//' }, 
+    'ruby': { 'ext': 'rb', 'comment': '#' }, 
+    'swift': { 'ext': 'switch', 'comment': '//' }, 
+    'go': { 'ext': 'go', 'comment': '//' },
+    'scala': { 'ext': 'scala', 'comment': '//' },
+    'kotlin': { 'ext': 'kt', 'comment': '//' },
+    'rust': { 'ext': 'rs', 'comment': '//' },
+    'php': { 'ext': 'php', 'comment': '//' },
+    'mysql': { 'ext': 'sql', 'comment': '#' },
 }
 LOCAL_PATH = './'
 
 def download():
+    with open('./cookie') as fp:
+        cookie = fp.read()
+        HEADERS['Cookie'] = cookie
     session = requests.Session()
     session.headers.update(HEADERS)
     offset = 0
@@ -88,12 +43,13 @@ def download():
         print('send request [{}]'.format(resp.url))
         if not resp.ok:
             print('request [{}] failed, status code: {}'.format(resp.url, resp.status_code))
-            continue
+            break
         print('request [{}] successed'.format(resp.url))
         data = resp.json()
         submissions = data.get('submissions_dump')
         if not isinstance(submissions, list):
             print('request [{}] received wrong data, response headers: {}, response data: {}'.format(resp.url, resp.headers, resp.text))
+            break
         for submission in submissions:
             if submission['status_display'] != 'Accepted':
                 print('\tsubmission [{} - {}] was not accepted'.format(submission['title'], submission['id']))
