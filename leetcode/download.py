@@ -1,6 +1,7 @@
 import requests
 import os
 import time
+import sys
 
 URL = 'https://leetcode.com/api/submissions/'
 HEADERS = {
@@ -36,9 +37,12 @@ def download():
         HEADERS['Cookie'] = cookie
     session = requests.Session()
     session.headers.update(HEADERS)
+    total = -1
+    if len(sys.argv) == 2:
+        total = int(sys.argv[1])
     offset = 0
     limit = 20
-    while True:
+    while total < 0 or offset < total:
         resp = session.get(URL, params={'offset': offset, 'limit': limit})
         print('send request [{}]'.format(resp.url))
         if not resp.ok:
@@ -67,6 +71,9 @@ def download():
                 comment = EXTENSIONS_MAP[lang]['comment']
             filename = '{}.{}'.format(submission['id'], ext)
             filepath = os.path.join(directory, filename)
+            if os.path.exists(filepath):
+                print('\tsubmission [{} - {}] was alread existed'.format(submission['title'], submission['id']))
+                continue
             with open(filepath, 'w') as fp:
                 fp.write('{} title: {}\n'.format(comment, title))
                 fp.write('{} detail: https://leetcode.com{}\n'.format(comment, submission['url']))
