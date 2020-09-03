@@ -38,11 +38,14 @@ def download():
     session = requests.Session()
     session.headers.update(HEADERS)
     total = -1
-    if len(sys.argv) == 2:
-        total = int(sys.argv[1])
     offset = 0
+    if len(sys.argv) >= 2:
+        total = int(sys.argv[1])
+    if len(sys.argv) >= 3:
+        offset = int(sys.argv[2])
     limit = 20
-    while total < 0 or offset < total:
+    cnt = 0
+    while total < 0 or cnt < total:
         resp = session.get(URL, params={'offset': offset, 'limit': limit})
         print('send request [{}]'.format(resp.url))
         if not resp.ok:
@@ -84,6 +87,7 @@ def download():
                 fp.write(submission['code'])
             print('\tsubmission [{} - {}] was downloaded'.format(submission['title'], submission['id']))
         l = len(submissions)
+        cnt += l
         if l < limit:
             break
         offset += l

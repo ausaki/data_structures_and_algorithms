@@ -1,0 +1,16 @@
+# title: minimum-cost-to-cut-a-stick
+# detail: https://leetcode.com/submissions/detail/378843271/
+# datetime: Mon Aug 10 20:05:57 2020
+# runtime: 540 ms
+# memory: 14.1 MB
+
+from functools import lru_cache
+class Solution:
+    def minCost(self, n, A):
+        A = sorted(A + [0, n])
+        k = len(A)
+        dp = [[0] * k for _ in range(k)]
+        for d in range(2, k):
+            for i in range(k - d):
+                dp[i][i + d] = min(dp[i][m] + dp[m][i + d] for m in range(i + 1, i + d)) + A[i + d] - A[i]
+        return dp[0][k - 1]
