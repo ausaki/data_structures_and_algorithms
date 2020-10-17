@@ -1,2 +1,4 @@
 rbtree.dot
 rbtree.dot.png
+*.dot
+*.png
