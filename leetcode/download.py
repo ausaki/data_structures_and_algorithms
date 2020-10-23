@@ -47,15 +47,15 @@ def download():
     cnt = 0
     while total < 0 or cnt < total:
         resp = session.get(URL, params={'offset': offset, 'limit': limit})
-        print('send request [{}]'.format(resp.url))
+        print('sending request [{}]'.format(resp.url))
         if not resp.ok:
-            print('request [{}] failed, status code: {}'.format(resp.url, resp.status_code))
+            print('request [{}] was failed, status code: {}'.format(resp.url, resp.status_code))
             break
-        print('request [{}] successed'.format(resp.url))
+        print('request [{}] was successful'.format(resp.url))
         data = resp.json()
         submissions = data.get('submissions_dump')
         if not isinstance(submissions, list):
-            print('request [{}] received wrong data, response headers: {}, response data: {}'.format(resp.url, resp.headers, resp.text))
+            print('request [{}] got wrong data, response headers: {}, response data: {}'.format(resp.url, resp.headers, resp.text))
             break
         for submission in submissions:
             if submission['status_display'] != 'Accepted':
@@ -75,7 +75,7 @@ def download():
             filename = '{}.{}'.format(submission['id'], ext)
             filepath = os.path.join(directory, filename)
             if os.path.exists(filepath):
-                print('\tsubmission [{} - {}] was alread existed'.format(submission['title'], submission['id']))
+                print('\tsubmission [{} - {}] alread exist'.format(submission['title'], submission['id']))
                 continue
             with open(filepath, 'w') as fp:
                 fp.write('{} title: {}\n'.format(comment, title))
