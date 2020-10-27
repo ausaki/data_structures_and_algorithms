@@ -26,6 +26,12 @@ def segment_sieve(n):
         low, high = high, high + root
     return all_primes
 
-primes = gen_primes(1000)
-print(primes)
-print(len(primes))
+
+def main():
+    primes = segment_sieve(100000000)
+    t = int(input())
+    for i in range(t):
+        n = int(input())
+        print(primes[n - 1])
+
+main()

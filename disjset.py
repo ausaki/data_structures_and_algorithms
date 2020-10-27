@@ -11,10 +11,11 @@ class DisjSet:
         i = self.find(x)
         j = self.find(y)
         if i == j:
-            return
+            return i
         if self.disj_set[i] < self.disj_set[j]:
             self.disj_set[j] = i
-        else:
-            if self.disj_set[i] == self.disj_set[j]:
-                self.disj_set[j] -= 1
-            self.disj_set[i] = j
+            return i
+        if self.disj_set[i] == self.disj_set[j]:
+            self.disj_set[j] -= 1
+        self.disj_set[i] = j
+        return j
