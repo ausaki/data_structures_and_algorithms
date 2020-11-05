@@ -3,3 +3,4 @@ rbtree.dot.png
 *.dot
 *.png
 *.out
+*.in
