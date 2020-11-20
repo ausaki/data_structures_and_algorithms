@@ -24,7 +24,7 @@ class FenwickTree:
         return s
 
     def range_sum(self, l, r):
-        return self.sum(r + 1) - self.sum(l)
+        return self.sum(r) - self.sum(l - 1)
 
 
 data = list(range(10))
