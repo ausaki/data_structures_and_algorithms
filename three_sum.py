@@ -1,24 +1,21 @@
 def three_sum(sequence, sum):
     sequence = sorted(sequence)
-    N = len(sequence)
-    i = 0
-    j = len(sequence) - 1
-    k = 0
-    while i <= N - 3:
-        k = i + 1
-        j = N - 1
+    n = len(sequence)
+    for i in range(n - 2):
+        l, r = i + 1, n - 1
         sub_sum = sum - sequence[i]
-        while k < j:
-            tmp = sequence[k] + sequence[j] 
-            if tmp == sub_sum:
-                yield sequence[i], sequence[k], sequence[j]
-                k += 1
-                j -= 1
-            elif tmp < sub_sum:
-                k += 1
+        if sub_sum < sequence[l] + sequence[l + 1] or sub_sum > sequence[r] + sequence[r - 1]:
+            continue
+        while l < r:
+            s = sequence[l] + sequence[r] 
+            if s == sub_sum:
+                yield sequence[i], sequence[l], sequence[r]
+                l += 1
+                r -= 1
+            elif s < sub_sum:
+                l += 1
             else:
-                j -= 1
-        i += 1
+                r -= 1
 
 
 if __name__ == '__main__':
