@@ -24,31 +24,34 @@ def find_longest_palindrome(sequence):
             
 
 def manacher(sequence):
-    # add boundaries
-    N = 2 * len(sequence) + 1
-    old_sequence = sequence
-    sequence = '|' + '|'.join(old_sequence) + '|'
-    P = [0] * N
-    C = 0
-    R = 0
-    for i in range(1, N):
-        if i < R:
-            P[i] = min([P[2 * C - i], R - i + 1])
-        else:
-            P[i] = 1
-        while i - P[i] >= 0 and i + P[i] < N and sequence[i - P[i]] == sequence[i + P[i]]:
-            P[i] += 1
-        if i + P[i] - 1 > R:
-            R = i + P[i] - 1
-            C = i
-    print(P)
-    m = 0
-    k = 0
-    for i, l in enumerate(P):
-        if l > m:
-            m = l
-            k = i
-    return sequence[k - m + 2: k+m: 2]
+    n = len(sequence)
+    d1, d2 = [0] * n, [0] * n
+    l, r = 0, -1
+    for i in range(n):
+        k = 1 if i > r else (1 + min(d1[l + r - i], r - i))
+        while i - k >= 0 and i + k < n and sequence[i - k] == sequence[i + k]:
+            k += 1
+        k -= 1
+        d1[i] = k
+        if i + k > r:
+            l, r = i - k, i + k
+    l, r = 0, -1
+    for i in range(n):
+        k = 0 if i > r else min(d2[l + r - i + 1], r - i + 1)
+        while i - k - 1 >= 0 and i + k < n and sequence[i - k - 1] == sequence[i + k]:
+            k += 1
+        d2[i] = k
+        if i + k > r:
+            l, r = i - k - 1, i + k
+    l, r = -1, -1
+    for i in range(n):
+        l1, r1 = i - d1[i], i + d1[i]
+        if r1 - l1 > r - l:
+            l, r = l1, r1
+        l1, r1 = i - d2[i], i + d2[i] - 1
+        if r1 - l1 > r - l:
+            l, r = l1, r1
+    return sequence[l: r + 1]
 
 if __name__ == '__main__':
     sequence = 'abcdefgfedc'
