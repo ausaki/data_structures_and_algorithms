@@ -11,7 +11,12 @@ def create_hashfunc(i, size):
     return h
 
 class BloomFilter:
-    def __init__(self, size=1<<15, nhashs=5) -> None:
+    def __init__(self, size=1 << 15, nhashs=5) -> None:
+        '''
+        size equals the number of bit in the bitmap.
+        nhashs equals the number of hash function.
+        '''
+
         self.size = size
         self._bitmap = bytearray(size // 8)
         self.hashs = [create_hashfunc(i, size) for i in range(nhashs)]
@@ -34,6 +39,41 @@ class BloomFilter:
         return self.hasitem(item)
 
 
+class CountingBloomFilter:
+    def __init__(self, size=1 << 15, nhashs=5) -> None:
+        '''
+        size equals the number of counters.
+        nhashs equals the number of hash function.
+        '''
+        self.size = size
+        self._bitmap = bytearray(size)
+        self.hashs = [create_hashfunc(i, size) for i in range(nhashs)]
+    
+    def add(self, item):
+        for h in self.hashs:
+            i = h(item) % self.size
+            self._bitmap[i] = min(255, self._bitmap[i] + 1)
+
+    def hasitem(self, item):
+        for h in self.hashs:
+            i = h(item) % self.size
+            if not self._bitmap[i]:
+                return False
+        return True
+
+    def remove(self, item):
+        idx = []
+        for h in self.hashs:
+            i = h(item) % self.size
+            if not self._bitmap[i]:
+                return 
+            idx.append(i)
+        for i in idx:
+            self._bitmap[i] -= 1
+
+    def __contains__(self, item):
+        return self.hasitem(item)
+
 
 def main():
     import random
@@ -52,6 +92,6 @@ def main():
 
     bf.add(20000)
     print(20000 in bf)
-    
+
 if __name__ == '__main__':
     main()
