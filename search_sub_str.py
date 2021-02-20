@@ -15,16 +15,13 @@ def search_sub_str_brute_force(s, sub):
     return -1
 
 
-def partial_table(sub):
-    m = len(sub)
-    table = [0] * (m + 1)
-    table[0] = -1
-    i = 0
-    while i < m:
-        j = table[i]
-        while j >= 0 and sub[i] != sub[j]:
-            j = table[j]
-        i += 1
+def make_table(s):
+    n = len(s)
+    table = [0] * n
+    for i in range(1, n):
+        j = table[i - 1]
+        while j >= 0 and s[i] != s[j]:
+            j = table[j - 1] if j else -1
         table[i] = j + 1
     return table
 
@@ -33,14 +30,11 @@ def search_sub_kmp(s, sub):
     n = len(s)
     m = len(sub)
     if n == 0:
-        if m == 0:
-            return 0
-        else:
-            return -1
-    elif m == 0:
+        return 0 if m == 0 else -1
+    if m == 0:
         return 0
 
-    table = partial_table(sub)
+    table = make_table(sub)
     i = 0
     j = 0
     while i < n:
@@ -49,19 +43,18 @@ def search_sub_kmp(s, sub):
             j += 1
             if j == m:
                 # find
-                break
+                return i - j
         else:
-            j = table[j]
-            if j < 0:
-                j = 0
+            if j:
+                j = table[j - 1]
+            else:
                 i += 1
-    if j == m:
-        return i - j
     return -1
 
 if __name__ == '__main__':
     s = 'ABC ABCDAB ABCDABCDABDE'
     sub = 'ABCDABD'
     print(s, sub, sep=', ')
-    print(partial_table(sub))
-    print(search_sub_kmp(s, sub))
+    print(make_table(sub))
+    i = search_sub_kmp(s, sub)
+    print(i, s[i: i + len(sub)])
