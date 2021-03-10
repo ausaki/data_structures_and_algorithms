@@ -1,14 +1,16 @@
-def bfs(i, n):
-    q = [(0, i)]
-    dist = [float('inf')] * n
-    visited = {i}
+def dijkstra(graph, start, target):
+    n = len(graph) # # of vertices
+    q = [(0, start)]
+    dist = [math.inf] * n
+    dist[start] = 0
     while q:
-        w, j = heapq.heappop(q)
-        if w > dist[j]:
+        w, u = heapq.heappop(q)
+        if w > dist[u]:
             continue
-        visited.add(j)
-        for k, w_ in g[j]:
-            d = w + w_
-            if k not in visited and d < dist[k]:
-                heapq.heappush(q, (d, k))
-                dist[k] = d
+        if u == target:
+            break
+        for v, w2 in graph[u]:
+            w2 += w
+            if w2 < dist[v]:
+                heapq.heappush(q, (w2, v))
+                dist[v] = w2
